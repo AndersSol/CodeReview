@@ -266,6 +266,7 @@ print(m["version"])
 print(m["wheel_url"])
 print(m["sha256"])
 print(m["size_bytes"])
+print(m["filename"])
 PYEOF
 
 # Bash 3.2 compatible field extraction
@@ -273,7 +274,8 @@ VERSION=$(sed -n '1p' "$MANIFEST_PARSED")
 WHEEL_URL=$(sed -n '2p' "$MANIFEST_PARSED")
 EXPECTED_SHA=$(sed -n '3p' "$MANIFEST_PARSED")
 EXPECTED_SIZE=$(sed -n '4p' "$MANIFEST_PARSED")
-if [ -z "$VERSION" ] || [ -z "$WHEEL_URL" ] || [ -z "$EXPECTED_SHA" ]; then
+WHEEL_FILENAME=$(sed -n '5p' "$MANIFEST_PARSED")
+if [ -z "$VERSION" ] || [ -z "$WHEEL_URL" ] || [ -z "$EXPECTED_SHA" ] || [ -z "$WHEEL_FILENAME" ]; then
   die "Manifest parsing failed (empty fields)"
 fi
 log "  ✓ Manifest: version=$VERSION size=$EXPECTED_SIZE"
@@ -340,7 +342,7 @@ else
 fi
 
 # ── 6. Download wheel ────────────────────────────────────────────────
-WHEEL_FILE="$TMP_DIR/wheel-$VERSION.whl"
+WHEEL_FILE="$TMP_DIR/$WHEEL_FILENAME"
 log "Downloading wheel …"
 if ! curl_safe -o "$WHEEL_FILE" "$WHEEL_URL"; then
   err "Failed to download wheel from $WHEEL_URL"
