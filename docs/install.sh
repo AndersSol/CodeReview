@@ -434,8 +434,8 @@ if [ "${CODEREVIEW_SKIP_SMOKE_TEST:-0}" != "1" ]; then
   if ! agentic-security-review --help >/dev/null 2>&1; then
     die "agentic-security-review CLI not responding (PATH issue? Try: pipx ensurepath; exec \$SHELL)"
   fi
-  if ! agentic-preflight --help >/dev/null 2>&1; then
-    warn "agentic-preflight CLI not responding (non-blocking)"
+  if ! agentic-security-preflight --help >/dev/null 2>&1; then
+    warn "agentic-security-preflight CLI not responding (non-blocking)"
   fi
   log "  ✓ CLIs respond"
 fi
@@ -446,7 +446,7 @@ $(printf "\033[32m✓ Installed agentic-security-review %s\033[0m" "$VERSION")
 
 Next steps:
   • CLI:               agentic-security-review --help
-  • Preflight:         agentic-preflight <target-dir>
+  • Preflight:         agentic-security-preflight <target-dir>
   • Via Claude Code:   /security-review <path>
   • Prompt template:   $TARGET_SKILL/PROMPT_TEMPLATE.md
 
