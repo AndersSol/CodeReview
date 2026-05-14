@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CodeReview — Multi-AI Security Review Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --grey: #4D575D;
+  --green: #008A00;
+  --light: #EDEEEE;
+  --muted: #9aa3a8;
+  --max: 760px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 400;
+  color: var(--grey);
+  background: #fff;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--green); text-decoration: none; }
+a:hover { text-decoration: underline; }
+main { max-width: var(--max); margin: 0 auto; padding: 64px 24px 96px; }
+header { border-bottom: 4px solid var(--green); padding-bottom: 16px; margin-bottom: 32px; }
+h1 { font-size: 32px; font-weight: 700; margin: 0; letter-spacing: -0.01em; color: var(--grey); }
+h2 { font-size: 20px; font-weight: 700; margin: 40px 0 12px; color: var(--grey); }
+p { margin: 0 0 14px; }
+code, kbd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+kbd { display: inline-block; background: var(--light); padding: 2px 8px; border-radius: 3px; color: var(--grey); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 8px 0 16px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--light); }
+th { font-weight: 700; background: var(--light); }
+pre {
+  background: #1d2226; color: #e6e8ea; padding: 16px 20px; border-radius: 6px;
+  overflow-x: auto; font-size: 13px; line-height: 1.5; margin: 12px 0;
+}
+.lead { font-size: 17px; color: var(--grey); margin-bottom: 28px; }
+.tagline { color: var(--muted); font-size: 14px; margin-top: 4px; }
+.cta {
+  background: var(--green); color: #fff; padding: 16px 20px; border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px;
+  user-select: all; display: block; margin: 16px 0 32px;
+}
+.callout {
+  border-left: 4px solid var(--green); padding: 12px 16px; background: var(--light);
+  font-size: 14px; border-radius: 0 6px 6px 0; margin: 16px 0;
+}
+ul { padding-left: 20px; }
+li { margin-bottom: 6px; }
+footer { color: var(--muted); font-size: 12px; margin-top: 64px; border-top: 1px solid var(--light); padding-top: 16px; }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>CodeReview</h1>
+  <p class="tagline">Multi-AI security review framework — evidence-first pipeline with deterministic consolidation, severity rubric, and release-policy engine.</p>
+</header>
+
+<p class="lead">Run three AI agents (Codex, Claude, optional Bob) through structured security review of your codebase. Get an HTML report with executive summary, full audit log, and machine-readable consolidation — without trusting any single agent.</p>
+
+<h2>Install</h2>
+<p>One command, requires Python 3.13+ and pipx:</p>
+
+<div class="cta">curl -fsSL https://anderssol.github.io/CodeReview/install.sh | bash</div>
+
+<p>The install script verifies SHA-256 against <a href="latest.json">latest.json</a> before installing.</p>
+
+<h2>What you get</h2>
+<ul>
+  <li><code>atea-security-review</code> — pipeline CLI for consolidating agent outputs into HTML report + JSON audit log</li>
+  <li><code>atea-preflight</code> — deterministic preflight (sandbox + inventory + optional gitleaks/bandit/semgrep/pip-audit + prompt-injection scan)</li>
+  <li>Claude Code skill at <code>~/.claude/skills/security-review</code> (invoke with <code>/security-review &lt;path&gt;</code>)</li>
+  <li>Bundled v2 JSON schema + v5 HTML template + 8-rule default release policy</li>
+</ul>
+
+<h2>How it works</h2>
+<ol>
+  <li><strong>Preflight</strong>: sandbox-validate target, inventory files, run optional scanners (gitleaks/bandit/semgrep/pip-audit), scan for prompt-injection in source comments</li>
+  <li><strong>Parallel agent run</strong>: Codex (code reasoner) + Claude (threat-model reviewer) + Bob (adversarial reviewer, optional) get the same hashed prompt with preflight context</li>
+  <li><strong>Schema validation</strong>: each agent output validated against <a href="https://github.com/AndersSol/CodeReview/blob/main/docs/schemas/security-finding-v2.json">v2 schema</a>; malformed outputs excluded gracefully</li>
+  <li><strong>Per-finding evidence verification BEFORE consolidation</strong>: open source file, confirm quote at claimed line</li>
+  <li><strong>Deterministic consolidation</strong>: cluster + dedup + worst-tuple rubric merge</li>
+  <li><strong>Severity from rubric</strong>: impact_class × privilege × env × input × trigger → severity. Not from agent vote.</li>
+  <li><strong>Confidence model</strong>: evidence_grade (55%) + reachability (25%) + agreement (15%) + tool_origin (5%). No agent self-confidence.</li>
+  <li><strong>Assessment classifier</strong>: 5 states (confirmed / plausible / weak_evidence / needs_manual_review / false_positive_candidate)</li>
+  <li><strong>Release policy engine</strong>: 8 default rules, all evaluated, first-match wins. Override via <code>--release-policy &lt;file.json&gt;</code>.</li>
+  <li><strong>HTML report</strong> with per-finding business-risk narrative + audit log JSON with all hashes for reproducibility</li>
+</ol>
+
+<h2>Production status</h2>
+<table>
+<thead><tr><th>Use case</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Personal use on small/medium codebases</td><td>✅ Ready (145 tests, live-validated 2026-05-14)</td></tr>
+<tr><td>Internal team shared use</td><td>🟡 Alpha (rough edges on Bob format, CWE-policy, enum aliases)</td></tr>
+<tr><td>External customer / board delivery</td><td>❌ Not yet (auto-gen business-risk is draft-tier; needs hand-written executive narrative)</td></tr>
+<tr><td>CI/CD integration</td><td>❌ Not yet</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+<strong>This release is v5.0.0.</strong> Auto-update via <a href="latest.json">latest.json</a> manifest. Source code is private at <code>AndersSol/multi-ai-security-review</code> — only release artefacts and install script are public.
+</div>
+
+<h2>Requirements</h2>
+<ul>
+  <li>Python 3.13+</li>
+  <li>pipx (<code>brew install pipx</code>)</li>
+  <li>Codex CLI (required) — primary code-reasoner agent</li>
+  <li>Claude Code (required) — threat-model reviewer (sub-agent)</li>
+  <li>Bob / IBM Bob Shell (optional) — adversarial reviewer</li>
+  <li>Optional scanners: gitleaks, bandit, semgrep, pip-audit</li>
+</ul>
+
+<h2>Verifying a release</h2>
+<pre><code>curl -fsSL https://anderssol.github.io/CodeReview/latest.json
+# version, wheel_url, sha256, size_bytes, python_requires, released
+</code></pre>
+
+<p>Install script downloads from <code>wheel_url</code>, recomputes SHA-256, fails hard on mismatch.</p>
+
+<h2>Releases</h2>
+<p>See <a href="https://github.com/AndersSol/CodeReview/releases">GitHub Releases</a> for all versions.</p>
+
+<footer>
+<p>Released by Anders Solstad · MIT license · Source private at <code>AndersSol/multi-ai-security-review</code></p>
+</footer>
+</main>
+</body>
+</html>
