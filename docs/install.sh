@@ -34,7 +34,7 @@ PUBKEY_HEX="4fd4611d32c934a4d2ce1d715f56d9c7e22f9841b26e4e0919e18cc2b3e4f4a9"
 EXPECTED_KEY_ID="codereview-2026-key-1"
 # This installer's own version. Manifest's min_installer_version must be <=
 # this for the install to proceed. Bump when adding new validation steps.
-INSTALLER_VERSION="5.0.0rc1"
+INSTALLER_VERSION="5.1.0rc1"
 MANIFEST_URL="https://anderssol.github.io/CodeReview/latest.json"
 EXPECTED_WHEEL_HOST="github.com"
 EXPECTED_WHEEL_PATH_PREFIX="/AndersSol/CodeReview/releases/download/v"
@@ -45,7 +45,7 @@ MIN_WHEEL_SIZE=1024
 MAX_WHEEL_SIZE=104857600
 
 # ── Tempdir + cleanup ────────────────────────────────────────────────
-TMP_DIR="$(mktemp -d -t agentic-codereview-install.XXXXXX)"
+TMP_DIR="$(mktemp -d -t agentic-security-review-install.XXXXXX)"
 trap 'rm -rf "$TMP_DIR"' EXIT INT TERM
 
 # ── Logging helpers ──────────────────────────────────────────────────
@@ -259,7 +259,7 @@ if "/v" + m["version"] + "/" not in u.path:
 expected_suffix = f"-{m['version']}-py3-none-any.whl"
 if not u.path.endswith(expected_suffix):
     sys.stderr.write(f"wheel_url filename suffix mismatch\n"); sys.exit(2)
-if m["filename"] != f"agentic_codereview{expected_suffix}":
+if m["filename"] != f"agentic_security_review{expected_suffix}":
     sys.stderr.write(f"manifest.filename {m['filename']!r} unexpected\n"); sys.exit(2)
 
 print(m["version"])
@@ -296,8 +296,8 @@ import json, sys
 try:
     data = json.load(sys.stdin)
     venvs = data.get('venvs', {})
-    if 'agentic-codereview' in venvs:
-        pkg = venvs['agentic-codereview']['metadata']['main_package']
+    if 'agentic-security-review' in venvs:
+        pkg = venvs['agentic-security-review']['metadata']['main_package']
         print(pkg.get('package_version', ''))
 except Exception as e:
     sys.stderr.write(f'pipx JSON parse failed: {e}\n')
@@ -367,7 +367,7 @@ fi
 log "  ✓ SHA-256 verified"
 
 # ── 8. pipx install ──────────────────────────────────────────────────
-log "Installing agentic-codereview via pipx …"
+log "Installing agentic-security-review via pipx …"
 if ! pipx install --force "$WHEEL_FILE" >/dev/null 2>&1; then
   err "pipx install failed. Re-run manually: pipx install --force $WHEEL_FILE"
   exit 3
@@ -377,7 +377,7 @@ log "  ✓ pipx install complete"
 # ── 9. Locate package data (dynamic; no hardcoded python version) ────
 log "Locating installed package data …"
 PIPX_VENV_DIR=$(pipx environment --value PIPX_LOCAL_VENVS 2>/dev/null || echo "$HOME/.local/pipx/venvs")
-PKG_VENV="$PIPX_VENV_DIR/agentic-codereview"
+PKG_VENV="$PIPX_VENV_DIR/agentic-security-review"
 if [ ! -d "$PKG_VENV" ]; then
   die "Cannot find pipx venv at $PKG_VENV"
 fi
@@ -387,10 +387,10 @@ if [ ! -x "$VENV_PY" ]; then
 fi
 PKG_DATA_DIR=$("$VENV_PY" -c "
 from importlib.resources import files
-print(files('agentic_codereview') / 'data')
+print(files('agentic_security_review') / 'data')
 ")
 if [ ! -d "$PKG_DATA_DIR" ]; then
-  die "Cannot find agentic_codereview/data inside pipx venv"
+  die "Cannot find agentic_security_review/data inside pipx venv"
 fi
 log "  ✓ Package data: $PKG_DATA_DIR"
 
@@ -431,8 +431,8 @@ log "  ✓ Prompt template available at $TARGET_SKILL/PROMPT_TEMPLATE.md (via sy
 # ── 11. Smoke test ───────────────────────────────────────────────────
 if [ "${CODEREVIEW_SKIP_SMOKE_TEST:-0}" != "1" ]; then
   log "Smoke test …"
-  if ! agentic-codereview --help >/dev/null 2>&1; then
-    die "agentic-codereview CLI not responding (PATH issue? Try: pipx ensurepath; exec \$SHELL)"
+  if ! agentic-security-review --help >/dev/null 2>&1; then
+    die "agentic-security-review CLI not responding (PATH issue? Try: pipx ensurepath; exec \$SHELL)"
   fi
   if ! agentic-preflight --help >/dev/null 2>&1; then
     warn "agentic-preflight CLI not responding (non-blocking)"
@@ -442,10 +442,10 @@ fi
 
 cat <<DONE
 
-$(printf "\033[32m✓ Installed agentic-codereview %s\033[0m" "$VERSION")
+$(printf "\033[32m✓ Installed agentic-security-review %s\033[0m" "$VERSION")
 
 Next steps:
-  • CLI:               agentic-codereview --help
+  • CLI:               agentic-security-review --help
   • Preflight:         agentic-preflight <target-dir>
   • Via Claude Code:   /security-review <path>
   • Prompt template:   $TARGET_SKILL/PROMPT_TEMPLATE.md
