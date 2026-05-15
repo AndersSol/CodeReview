@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CodeReview — Multi-AI Security Review Framework</title>
+<title>Agentic Security Review</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
@@ -60,8 +60,8 @@ footer { color: var(--muted); font-size: 12px; margin-top: 64px; border-top: 1px
 <body>
 <main>
 <header>
-  <h1>CodeReview</h1>
-  <p class="tagline">Multi-AI security review framework — evidence-first pipeline with deterministic consolidation, severity rubric, and release-policy engine.</p>
+  <h1>Agentic Security Review</h1>
+  <p class="tagline">Multi-agent security review with evidence-first pipeline, deterministic consolidation, severity rubric, and release-policy engine.</p>
 </header>
 
 <p class="lead">Run three AI agents (Codex, Claude, optional Bob) through structured security review of your codebase. Get an HTML report with executive summary, full audit log, and machine-readable consolidation — without trusting any single agent.</p>
@@ -75,8 +75,10 @@ footer { color: var(--muted); font-size: 12px; margin-top: 64px; border-top: 1px
 
 <h2>What you get</h2>
 <ul>
-  <li><code>atea-security-review</code> — pipeline CLI for consolidating agent outputs into HTML report + JSON audit log</li>
-  <li><code>atea-preflight</code> — deterministic preflight (sandbox + inventory + optional gitleaks/bandit/semgrep/pip-audit + prompt-injection scan)</li>
+  <li><code>agentic-security-review</code> — pipeline CLI for consolidating agent outputs into HTML report + JSON audit log</li>
+  <li><code>agentic-security-preflight</code> — deterministic preflight (sandbox + inventory + optional gitleaks/bandit/semgrep/pip-audit + 5-level prompt-injection scan)</li>
+  <li><code>agentic-evidence-verify</code> — standalone evidence-verifier CLI for ad-hoc finding sanity checks</li>
+  <li><code>agentic-security-claude-adapter</code> — EXPERIMENTAL Claude adapter for non-Claude-Code contexts (CI, scripts)</li>
   <li>Claude Code skill at <code>~/.claude/skills/security-review</code> (invoke with <code>/security-review &lt;path&gt;</code>)</li>
   <li>Bundled v2 JSON schema + v5 HTML template + 8-rule default release policy</li>
 </ul>
