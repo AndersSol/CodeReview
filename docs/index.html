@@ -13,6 +13,9 @@
   --green: #008A00;
   --light: #EDEEEE;
   --muted: #9aa3a8;
+  --orange: #E67E22;
+  --red: #C0392B;
+  --blue: #2D7BBA;
   --max: 760px;
 }
 * { box-sizing: border-box; }
@@ -52,6 +55,127 @@ pre {
   border-left: 4px solid var(--green); padding: 12px 16px; background: var(--light);
   font-size: 14px; border-radius: 0 6px 6px 0; margin: 16px 0;
 }
+
+/* Flow diagram — non-technical visualization */
+.flow {
+  margin: 24px 0 32px;
+  display: grid;
+  gap: 12px;
+}
+.flow-step {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 16px;
+  align-items: start;
+  padding: 16px;
+  border: 1px solid var(--light);
+  border-radius: 8px;
+  background: #fff;
+  position: relative;
+}
+.flow-step::after {
+  content: "";
+  position: absolute;
+  left: 39px;
+  bottom: -16px;
+  width: 0;
+  height: 16px;
+  border-left: 2px dashed var(--light);
+  z-index: 1;
+}
+.flow-step:last-child::after { display: none; }
+.flow-num {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  color: #fff;
+  background: var(--green);
+  flex-shrink: 0;
+  margin: 4px 0 0 8px;
+}
+.flow-step[data-kind="prep"] .flow-num { background: var(--blue); }
+.flow-step[data-kind="check"] .flow-num { background: var(--orange); }
+.flow-step[data-kind="judge"] .flow-num { background: var(--red); }
+.flow-title {
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 0 4px;
+  color: var(--grey);
+}
+.flow-body {
+  font-size: 14px;
+  margin: 0;
+  color: var(--grey);
+}
+.flow-meta {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 12px;
+  background: var(--light);
+  padding: 2px 8px;
+  border-radius: 3px;
+  color: var(--grey);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.agents {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.agent {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--light);
+  font-weight: 500;
+}
+.agent-codex { border-color: #444; color: #111; background: #fafafa; }
+.agent-claude { border-color: #c66; color: #803030; background: #fff5f5; }
+.agent-bob { border-color: var(--blue); color: var(--blue); background: #f0f6fc; }
+.states {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.state-pill {
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--light);
+  color: var(--grey);
+}
+.state-confirmed { background: #d4edda; color: #155724; }
+.state-plausible { background: #fff3cd; color: #856404; }
+.state-weak { background: #f8d7da; color: #721c24; }
+.state-review { background: #d1ecf1; color: #0c5460; }
+.state-fp { background: #e2e3e5; color: #383d41; }
+.why-box {
+  background: var(--light);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 24px 0;
+  font-size: 14px;
+}
+.why-box h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--grey);
+}
+.why-box ul { margin: 8px 0 0; padding-left: 20px; }
+@media (max-width: 520px) {
+  .flow-step { grid-template-columns: 44px 1fr; gap: 12px; padding: 14px; }
+  .flow-num { width: 32px; height: 32px; font-size: 15px; margin-left: 6px; }
+  .flow-step::after { left: 30px; }
+}
 ul { padding-left: 20px; }
 li { margin-bottom: 6px; }
 footer { color: var(--muted); font-size: 12px; margin-top: 64px; border-top: 1px solid var(--light); padding-top: 16px; }
@@ -84,24 +208,112 @@ footer { color: var(--muted); font-size: 12px; margin-top: 64px; border-top: 1px
 </ul>
 
 <h2>How it works</h2>
-<ol>
-  <li><strong>Preflight</strong>: sandbox-validate target, inventory files, run optional scanners (gitleaks/bandit/semgrep/pip-audit), scan for prompt-injection in source comments</li>
-  <li><strong>Parallel agent run</strong>: Codex (code reasoner) + Claude (threat-model reviewer) + Bob (adversarial reviewer, optional) get the same hashed prompt with preflight context</li>
-  <li><strong>Schema validation</strong>: each agent output validated against <a href="https://github.com/AndersSol/CodeReview/blob/main/docs/schemas/security-finding-v2.json">v2 schema</a>; malformed outputs excluded gracefully</li>
-  <li><strong>Per-finding evidence verification BEFORE consolidation</strong>: open source file, confirm quote at claimed line</li>
-  <li><strong>Deterministic consolidation</strong>: cluster + dedup + worst-tuple rubric merge</li>
-  <li><strong>Severity from rubric</strong>: impact_class × privilege × env × input × trigger → severity. Not from agent vote.</li>
-  <li><strong>Confidence model</strong>: evidence_grade (55%) + reachability (25%) + agreement (15%) + tool_origin (5%). No agent self-confidence.</li>
-  <li><strong>Assessment classifier</strong>: 5 states (confirmed / plausible / weak_evidence / needs_manual_review / false_positive_candidate)</li>
-  <li><strong>Release policy engine</strong>: 8 default rules, all evaluated, first-match wins. Override via <code>--release-policy &lt;file.json&gt;</code>.</li>
-  <li><strong>HTML report</strong> with per-finding business-risk narrative + audit log JSON with all hashes for reproducibility</li>
-</ol>
+
+<p>You hand the framework a codebase. Three AI agents read it in parallel. The framework then checks each finding against actual source code, applies a fixed rule for how serious it is, and gives you a clear "ship / review / block" verdict — with full evidence.</p>
+
+<div class="flow">
+
+  <div class="flow-step" data-kind="prep">
+    <div class="flow-num">1</div>
+    <div>
+      <p class="flow-title">You point it at a codebase</p>
+      <p class="flow-body">A folder of source files. Could be a small library or a full application. The framework first locks down the target so it cannot read outside that folder.</p>
+      <span class="flow-meta">sandbox + inventory</span>
+    </div>
+  </div>
+
+  <div class="flow-step" data-kind="prep">
+    <div class="flow-num">2</div>
+    <div>
+      <p class="flow-title">Automated scanners run first</p>
+      <p class="flow-body">Standard security tools (like virus scanners for code) check for leaked passwords, known weak patterns, and dependencies with known vulnerabilities. Plus a scan for "prompt-injection" — text inside the codebase that could trick the AIs.</p>
+      <span class="flow-meta">gitleaks · bandit · semgrep · pip-audit</span>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div>
+      <p class="flow-title">Three AI agents read in parallel</p>
+      <p class="flow-body">Each gets the same hashed prompt and the scanner results. They look for security weaknesses independently and write structured findings. One AI alone misses things; three together catch more.</p>
+      <div class="agents">
+        <span class="agent agent-codex">Codex (OpenAI)</span>
+        <span class="agent agent-claude">Claude (Anthropic)</span>
+        <span class="agent agent-bob">Bob (IBM, optional)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-step" data-kind="check">
+    <div class="flow-num">4</div>
+    <div>
+      <p class="flow-title">Each finding is fact-checked against the source code</p>
+      <p class="flow-body">The framework opens the file the AI cited, finds the exact line, and confirms the quoted code is actually there. AIs sometimes hallucinate — citing line 247 when the code is on line 142, or quoting something that doesn't exist. Those findings are flagged as <em>unverified</em> before they get consolidated.</p>
+      <span class="flow-meta">file open · ±5-line search · quote match</span>
+    </div>
+  </div>
+
+  <div class="flow-step" data-kind="check">
+    <div class="flow-num">5</div>
+    <div>
+      <p class="flow-title">Severity comes from a fixed rule — not AI opinion</p>
+      <p class="flow-body">Each finding is scored on six factors: what an attacker could do, what access they need, what environment is hit, where the input comes from, how easy to trigger, and whether the code is actually reachable. The combination determines Critical / High / Medium / Low — deterministically. The same finding always gets the same severity.</p>
+      <span class="flow-meta">impact × privilege × env × input × trigger × reachability</span>
+    </div>
+  </div>
+
+  <div class="flow-step" data-kind="judge">
+    <div class="flow-num">6</div>
+    <div>
+      <p class="flow-title">Every finding gets one of five states</p>
+      <p class="flow-body">Nothing is filtered away — every finding is preserved and labelled. You see exactly which ones are firmly real, which need a human glance, and which look like noise.</p>
+      <div class="states">
+        <span class="state-pill state-confirmed">confirmed</span>
+        <span class="state-pill state-plausible">plausible</span>
+        <span class="state-pill state-weak">weak evidence</span>
+        <span class="state-pill state-review">needs manual review</span>
+        <span class="state-pill state-fp">false-positive candidate</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-step" data-kind="judge">
+    <div class="flow-num">7</div>
+    <div>
+      <p class="flow-title">Eight rules decide: ship, review, accept, or block</p>
+      <p class="flow-body">A release policy engine evaluates every finding against eight standard rules ("any confirmed Critical → block", "exposed secret → block", "auth-bypass at Medium+ → needs review", etc.). All rules are tested and logged. You get a clear verdict, not a maybe.</p>
+      <span class="flow-meta">first match wins · all evaluated · override with --release-policy</span>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">8</div>
+    <div>
+      <p class="flow-title">You get a report + a full audit log</p>
+      <p class="flow-body">A single HTML file with an executive summary, per-finding business-risk narrative, evidence citations, and the 6×6 coverage matrix. Plus a JSON audit log with every hash needed to reproduce the result later — schema, rubric, policy, prompt, every agent's raw output.</p>
+      <span class="flow-meta">HTML report + reproducible audit JSON</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="why-box">
+<h3>Why three AIs and a deterministic rubric?</h3>
+<p>AI agents fail in ways you can't predict. One day Codex misses an auth-bypass bug; another day Claude hallucinates a line number; Bob has been known to recommend the buggy code as the fix. Catastrophically.</p>
+<ul>
+  <li><strong>Three agents</strong> mean that when one fails, the other two usually catch what it missed (or expose what it got wrong).</li>
+  <li><strong>Evidence verification</strong> catches the "AI said X but the code says Y" failure mode.</li>
+  <li><strong>The fixed rubric</strong> means that a real Critical bug stays Critical even if only one agent caught it — instead of being dismissed as low-confidence.</li>
+  <li><strong>The release policy</strong> turns "should we ship?" from an opinion into a documented decision you can audit.</li>
+</ul>
+<p>This is operational triangulation, not magic. Limitations are stated prominently in every report.</p>
+</div>
 
 <h2>Production status</h2>
 <table>
 <thead><tr><th>Use case</th><th>Status</th></tr></thead>
 <tbody>
-<tr><td>Personal use on small/medium codebases</td><td>✅ Ready (145 tests, live-validated 2026-05-14)</td></tr>
+<tr><td>Personal use on small/medium codebases</td><td>✅ Ready (219 tests, live-validated 2026-05-14)</td></tr>
 <tr><td>Internal team shared use</td><td>🟡 Alpha (rough edges on Bob format, CWE-policy, enum aliases)</td></tr>
 <tr><td>External customer / board delivery</td><td>❌ Not yet (auto-gen business-risk is draft-tier; needs hand-written executive narrative)</td></tr>
 <tr><td>CI/CD integration</td><td>❌ Not yet</td></tr>
@@ -109,7 +321,7 @@ footer { color: var(--muted); font-size: 12px; margin-top: 64px; border-top: 1px
 </table>
 
 <div class="callout">
-<strong>This release is v5.0.0.</strong> Auto-update via <a href="latest.json">latest.json</a> manifest. Source code is private at <code>AndersSol/multi-ai-security-review</code> — only release artefacts and install script are public.
+<strong>This release is v5.2.0rc1.</strong> Auto-update via <a href="latest.json">latest.json</a> manifest. Source code is private at <code>AndersSol/agentic-security-review</code> — only release artefacts and install script are public.
 </div>
 
 <h2>Requirements</h2>
@@ -133,7 +345,7 @@ footer { color: var(--muted); font-size: 12px; margin-top: 64px; border-top: 1px
 <p>See <a href="https://github.com/AndersSol/CodeReview/releases">GitHub Releases</a> for all versions.</p>
 
 <footer>
-<p>Released by Anders Solstad · MIT license · Source private at <code>AndersSol/multi-ai-security-review</code></p>
+<p>Released by Anders Solstad · MIT license · Source private at <code>AndersSol/agentic-security-review</code></p>
 </footer>
 </main>
 </body>
