@@ -1,13 +1,13 @@
 {
-  "version": "5.1.0rc1",
-  "filename": "agentic_security_review-5.1.0rc1-py3-none-any.whl",
-  "wheel_url": "https://github.com/AndersSol/CodeReview/releases/download/v5.1.0rc1/agentic_security_review-5.1.0rc1-py3-none-any.whl",
-  "sha256": "d399d09bbde115915f7bd98645c580ef555f63aa1e0a457e9a5a81c483af4b70",
-  "size_bytes": 91138,
-  "created_at": "2026-05-14T23:19:11Z",
-  "valid_until": "2027-05-14T23:19:11Z",
+  "version": "5.2.0rc1",
+  "filename": "agentic_security_review-5.2.0rc1-py3-none-any.whl",
+  "wheel_url": "https://github.com/AndersSol/CodeReview/releases/download/v5.2.0rc1/agentic_security_review-5.2.0rc1-py3-none-any.whl",
+  "sha256": "0f59057ca12293969be962a36d41d471ecc304d735dbafca690682438a418922",
+  "size_bytes": 105673,
+  "created_at": "2026-05-15T07:22:20Z",
+  "valid_until": "2027-05-15T07:22:20Z",
   "min_installer_version": "5.0.0rc1",
   "key_id": "codereview-2026-key-1",
   "signature_alg": "Ed25519",
-  "signature": "dp4eTuu8He4AgKvN/12pe97pBoM8ufEU11vwbHCty8D/AF3vVubnHCrAZyOjG4Mzz4q9BPSc6lwrhbJGOpCrDg=="
+  "signature": "ApLckCjW+1qi9WGB5Q3S2TcXyjC6Evwf+whMIl8K1qGIlWpqXcOCCPKWuJbVZzbLAIYYwVrZBJ62v27gOgkhCQ=="
 }
