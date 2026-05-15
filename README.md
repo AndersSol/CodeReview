@@ -4,7 +4,7 @@ Public release artefacts for **Agentic Security Review** — a multi-agent
 security code review framework with deterministic consolidation, evidence-first
 pipeline, severity rubric, 5-state assessment, and 8-rule release policy.
 
-Source is private at `AndersSol/multi-ai-security-review`.
+Source is private at `AndersSol/agentic-security-review`.
 
 - **Landing page:** https://anderssol.github.io/CodeReview/
 - **Install (oneliner):**
