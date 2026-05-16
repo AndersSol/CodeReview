@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<title>Atea Security Review v5.4 — Full benchmark-rapport</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&display=swap');
+  :root { --atea-green: #008A00; --atea-grey: #4D575D; --atea-light-grey: #EDEEEE; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Inter', system-ui, sans-serif; color: var(--atea-grey); max-width: 880px; margin: 0 auto; padding: 4rem 2rem; line-height: 1.6; font-weight: 400; }
+  h1 { font-size: 2.5rem; font-weight: 800; color: #1a1a1a; margin-top: 3rem; margin-bottom: 1rem; letter-spacing: -0.02em; line-height: 1.15; }
+  h2 { font-size: 1.75rem; font-weight: 700; color: #1a1a1a; margin-top: 2.5rem; border-bottom: 2px solid var(--atea-light-grey); padding-bottom: 0.5rem; }
+  h3 { font-size: 1.25rem; font-weight: 700; color: var(--atea-grey); margin-top: 1.75rem; }
+  h4 { font-size: 1rem; font-weight: 700; color: var(--atea-grey); margin-top: 1.25rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  a { color: var(--atea-green); text-decoration: underline; text-underline-offset: 2px; }
+  code { background: var(--atea-light-grey); padding: 0.1em 0.35em; border-radius: 3px; font-size: 0.9em; font-family: 'JetBrains Mono', Consolas, monospace; }
+  pre { background: #1a1a1a; color: #e5e5e5; padding: 1rem; border-radius: 4px; overflow-x: auto; line-height: 1.5; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.95em; }
+  th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--atea-light-grey); }
+  th { background: var(--atea-light-grey); font-weight: 700; }
+  blockquote { border-left: 3px solid var(--atea-green); padding-left: 1rem; margin: 1.5rem 0; font-style: italic; color: var(--atea-grey); }
+  ul, ol { padding-left: 1.5rem; }
+  li { margin: 0.3rem 0; }
+  hr { border: 0; border-top: 1px solid var(--atea-light-grey); margin: 3rem 0; }
+  .header-bar { font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.15em; color: var(--atea-grey); margin-bottom: 0.5rem; }
+  .footer { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--atea-light-grey); font-size: 0.85em; color: #888; text-align: center; }
+  @media print {
+    body { padding: 1rem; }
+    pre { white-space: pre-wrap; word-break: break-all; }
+    a { color: var(--atea-grey); text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<div class="header-bar"><strong>ATEA</strong> · Security Review v5.4 · Full benchmark-rapport</div>
+<div id="content">Laster...</div>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<script>
+  fetch('./benchmark-rapport-v54.md')
+    .then(r => r.text())
+    .then(md => {
+      document.getElementById('content').innerHTML = marked.parse(md);
+    })
+    .catch(err => {
+      document.getElementById('content').innerHTML = '<p>Kunne ikke laste rapport: ' + err.message + '</p>';
+    });
+</script>
+<div class="footer">
+  Generert 16. mai 2026 — Skapnerden · Anders Solstad ·
+  <a href="https://github.com/AndersSol/CodeReview">github.com/AndersSol/CodeReview</a>
+</div>
+</body>
+</html>
