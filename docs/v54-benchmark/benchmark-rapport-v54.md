@@ -184,7 +184,7 @@ v54-eval/
 **Pipeline-kjøretid:** 0.07s per pipeline-run (consolidator-only, agents ekskludert).
 **Debater-kjøretid:** ~3-5 min per finding (codex exec).
 
-*Generert: 2026-05-15 ~21:50 — Skapnerden / v5.4-eval*
+*Generert: 2026-05-15 ~21:50 — Anders Solstad (anders.solstad@atea.no) / v5.4-eval*
 
 ---
 
